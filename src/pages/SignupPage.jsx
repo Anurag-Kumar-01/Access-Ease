@@ -1,8 +1,12 @@
 import React from 'react';
 import { Accessibility } from 'lucide-react';
+import { Navigate, useNavigate } from 'react-router-dom';
+
 
 // Signup Page Component
- const SignupPage = ({ setCurrentPage }) => (
+ const SignupPage = () => {
+  const navigate = useNavigate();
+  return (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div className="max-w-md w-full space-y-8">
       <div className="text-center">
@@ -88,8 +92,8 @@ import { Accessibility } from 'lucide-react';
         <div className="text-center mt-6">
           <span className="text-sm text-gray-600">Already have an account? </span>
           <button
+            onClick={() => navigate('/login')}
             type="button"
-            onClick={() => setCurrentPage('login')}
             className="font-medium text-blue-600 hover:text-blue-500"
           >
             Sign in
@@ -97,7 +101,7 @@ import { Accessibility } from 'lucide-react';
         </div>
       </div>
     </div>
-  </div>
-);
+  </div>)
+};
 
 export default SignupPage

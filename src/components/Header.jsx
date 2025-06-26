@@ -1,12 +1,12 @@
 import React,{useState} from "react";
 import { Accessibility, Menu, X } from 'lucide-react';
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 
 // Header Component
- export const Header = ({ currentPage, setCurrentPage }) => {
+ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const navItems = [
     {
       name : 'Home',
@@ -43,27 +43,32 @@ import { Link } from "react-router-dom";
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            {navItems.map((item) => (
-              <button
-                key={item}
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return(<button
+                key={item.name}
                 onClick={() => navigate(item.path)}
-                className={`px-3 py-2 text-sm font-medium `}
+                className={`cursor-pointer px-3 py-2 text-sm font-medium ${
+                  isActive 
+                    ? 'text-blue-600 border-b-2 border-blue-600' 
+                    : 'text-gray-700 hover:text-blue-600'
+                } `}
               >
                 {item.name}
-              </button>
-            ))}
+              </button>)
+ })}
           </nav>
           
           <div className="hidden md:flex items-center space-x-4">
             <button 
-              onClick={() => setCurrentPage('login')}
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium"
+              onClick={() => navigate(navItems[5].path)}
+              className="cursor-pointer text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium"
             >
               Login
             </button>
             <button 
-              onClick={() => setCurrentPage('signup')}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium"
+              onClick={() => navigate(navItems[6].path)}
+              className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium"
             >
               Get Started
             </button>
@@ -83,21 +88,21 @@ import { Link } from "react-router-dom";
       {isMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-100">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            {['Home', 'Features', 'Pricing', 'About', 'Contact', 'Login'].map((item) => (
+            {navItems.map((item) => (
               <button
-                key={item}
+                key={item.name}
                 onClick={() => {
-                  setCurrentPage(item.toLowerCase());
+                  navigate(item.path);
                   setIsMenuOpen(false);
                 }}
                 className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
               >
-                {item}
+                {item.name}
               </button>
             ))}
             <button 
               onClick={() => {
-                setCurrentPage('signup');
+                navigate(navItems[6].path);
                 setIsMenuOpen(false);
               }}
               className="block w-full text-left bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-base font-medium mt-2"
