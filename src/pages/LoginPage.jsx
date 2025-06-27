@@ -3,6 +3,7 @@ import { Accessibility } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
+
 // Login Page Component
 const LoginPage = ({ setCurrentPage }) => {
   const [error, setError] = useState("");
@@ -33,6 +34,7 @@ const LoginPage = ({ setCurrentPage }) => {
       
       localStorage.setItem('token', response.data.token);
       setError(""); 
+      dispatch({ type: 'LOGIN_SUCCESS', payload: response.data });
       // Dispatch login action if needed
       // dispatch(loginAction(response.data));
       

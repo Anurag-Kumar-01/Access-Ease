@@ -12,6 +12,7 @@ import FeaturePage from './pages/FeaturePage.jsx'
 import PricingPage from './pages/PricingPage.jsx'
 import store from './store/index.js'
 import { Provider } from 'react-redux'
+import DashboardPage from './pages/DashboardPage.jsx'
 
 
 const router = createBrowserRouter([
@@ -42,6 +43,9 @@ const router = createBrowserRouter([
       },{
         path: '/Pricing',
         element: <PricingPage/>
+      },{
+        path : '/Dashboard',
+        element : <DashboardPage/>
       }
     ]
   }
