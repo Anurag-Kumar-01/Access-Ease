@@ -1,9 +1,50 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { Accessibility } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 // Login Page Component
-const LoginPage = ({ setCurrentPage }) => (
-  <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+const LoginPage = ({ setCurrentPage }) => {
+  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const handleChange = (e) => {
+    setLoginData({
+      ...loginData,
+      [e.target.name]: e.target.value
+    });
+  };
+  const handlesubmit = async (e) => {
+    e.preventDefault();
+    // Basic validation
+    if (!loginData.email || !loginData.password) {
+      setError("All fields are required");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(loginData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    console.log("Form submitted successfully", loginData);
+    setError(""); 
+    try {
+      const response = await axios.post('#', loginData);
+      
+      localStorage.setItem('token', response.data.token);
+      setError(""); 
+      // Dispatch login action if needed
+      // dispatch(loginAction(response.data));
+      
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError("An error occurred during login. Please try again later.");
+    }
+    
+    navigate('/dashboard'); 
+  };
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div className="max-w-md w-full space-y-8">
       <div className="text-center">
         <Accessibility className="mx-auto h-12 w-12 text-blue-600" />
@@ -11,10 +52,14 @@ const LoginPage = ({ setCurrentPage }) => (
         <p className="mt-2 text-sm text-gray-600">Sign in to your AccessEase account</p>
       </div>
       <div className="bg-white py-8 px-6 shadow-sm rounded-lg">
-        <form className="space-y-6">
+        <form 
+        onSubmit={handlesubmit}
+        className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Email address</label>
             <input
+              name="email"
+              onChange={handleChange}
               type="email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               placeholder="Enter your email"
@@ -23,6 +68,8 @@ const LoginPage = ({ setCurrentPage }) => (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
             <input
+              name="password"
+              onChange={handleChange}
               type="password"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               placeholder="Enter your password"
@@ -43,6 +90,7 @@ const LoginPage = ({ setCurrentPage }) => (
           >
             Sign in
           </button>
+          {error && <div className="text-red-500 text-xl mt-2 text-center">{error}</div>}
         </form>
         <div className="mt-6">
           <div className="relative">
@@ -75,6 +123,9 @@ const LoginPage = ({ setCurrentPage }) => (
       </div>
     </div>
   </div>
-);
+
+  )
+  
+};
 
 export default LoginPage

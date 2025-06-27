@@ -1,11 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Accessibility } from 'lucide-react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 
 // Signup Page Component
  const SignupPage = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [formdata,setFormdata] = useState({firstname:"", lastname:"", email:"", password:"", plan:"Free Plan"});
+  const [error, setError] = useState("");
+  const handleSubmit = async (e) =>{
+    e.preventDefault();
+    // Basic validation
+    if (!formdata.firstname || !formdata.lastname || !formdata.email || !formdata.password) {
+      setError("All fields are required");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(formdata.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    console.log("Form submitted successfully", formdata);
+    try {
+        const response = await axios.post('#',formdata)
+        localStorage.setItem('token', response.data.token);
+         setError(""); 
+         navigate('/login');
+
+    } catch (error) {
+      console.error("Error during signup:", error);
+      setError("An error occurred during signup. Please try again later.");
+    }
+   
+  }
+  const handleChange = (e) => {
+    setFormdata({
+      ...formdata,
+      [e.target.name]: e.target.value
+    });
+  };
   return (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div className="max-w-md w-full space-y-8">
@@ -15,11 +50,15 @@ import { Navigate, useNavigate } from 'react-router-dom';
         <p className="mt-2 text-sm text-gray-600">Start making the web accessible today</p>
       </div>
       <div className="bg-white py-8 px-6 shadow-sm rounded-lg">
-        <form className="space-y-6">
+        <form
+          onSubmit={handleSubmit}
+         className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">First name</label>
               <input
+              name='firstname'
+              onChange={handleChange}
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 placeholder="First name"
@@ -28,7 +67,9 @@ import { Navigate, useNavigate } from 'react-router-dom';
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Last name</label>
               <input
+              name='lastname'
                 type="text"
+                onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 placeholder="Last name"
               />
@@ -37,7 +78,9 @@ import { Navigate, useNavigate } from 'react-router-dom';
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Email address</label>
             <input
+              name='email'
               type="email"
+              onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               placeholder="Enter your email"
             />
@@ -45,14 +88,18 @@ import { Navigate, useNavigate } from 'react-router-dom';
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
             <input
+              name='password'
               type="password"
+              onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               placeholder="Create a password"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Plan Selection</label>
-            <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+            <select
+              name='plan' 
+             onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
               <option>Free Plan</option>
               <option>Pro Plan - $29/month</option>
               <option>Enterprise Plan - $99/month</option>
@@ -70,6 +117,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
           >
             Create Account
           </button>
+          {error && <div className="text-red-500 text-xl   mt-2 text-center">{error}</div>}
         </form>
         <div className="mt-6">
           <div className="relative">
