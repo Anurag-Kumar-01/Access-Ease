@@ -5,14 +5,12 @@ import Footer from './components/Footer';
 
 
 const AccessEaseApp = () => {
-  const [currentPage, setCurrentPage] = useState('home');
-
   
 
   return (
    <>
    <div className='w-full '>
-    <Header/>
+    <Header />
     <Outlet/>
     <Footer/>
    </div>

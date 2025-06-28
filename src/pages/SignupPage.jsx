@@ -22,13 +22,13 @@ import axios from 'axios';
       setError("Please enter a valid email address");
       return;
     }
-    console.log("Form submitted successfully", formdata);
+    // console.log("Form submitted successfully", formdata);
     try {
-        const response = await axios.post('#',formdata)
+        const response = await axios.post('/api/v1/users/register',formdata)
         localStorage.setItem('token', response.data.token);
-         setError(""); 
+         setError("");
+         alert("Signup successful! You can now log in.");
          navigate('/login');
-
     } catch (error) {
       console.error("Error during signup:", error);
       setError("An error occurred during signup. Please try again later.");

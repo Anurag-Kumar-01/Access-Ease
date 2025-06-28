@@ -27,10 +27,9 @@ const LoginPage = ({ setCurrentPage }) => {
       setError("Please enter a valid email address");
       return;
     }
-    console.log("Form submitted successfully", loginData);
-    setError(""); 
+    //console.log("Form submitted successfully", loginData);
     try {
-      const response = await axios.post('#', loginData);
+      const response = await axios.post('/api/v1/users/login', loginData);
       
       localStorage.setItem('token', response.data.token);
       setError(""); 
