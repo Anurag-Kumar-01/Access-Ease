@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import { Accessibility } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 
 // Login Page Component
@@ -32,17 +33,19 @@ const LoginPage = ({ setCurrentPage }) => {
       const response = await axios.post('/api/v1/users/login', loginData);
       
       localStorage.setItem('token', response.data.token);
-      setError(""); 
+      setError("");
+      alert("Login successful! Redirecting to dashboard...");
       dispatch({ type: 'LOGIN_SUCCESS', payload: response.data });
       // Dispatch login action if needed
       // dispatch(loginAction(response.data));
+      navigate('/Dashboard');
       
     } catch (error) {
       console.error("Error during login:", error);
-      setError("An error occurred during login. Please try again later.");
+      setError("Invalid email or password. Please try again.");
     }
     
-    navigate('/dashboard'); 
+     
   };
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
